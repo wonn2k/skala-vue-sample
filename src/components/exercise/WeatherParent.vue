@@ -6,9 +6,9 @@ import SearchBar from './SearchBar.vue'
 import WeatherCard from './WeatherCard.vue'
 
 const weatherList = ref([
-  { id: 'city_01', name: '서울', temp: 28, status: '맑음' },
-  { id: 'city_02', name: '수원', temp: 24, status: '비' },
-  { id: 'city_03', name: '부산', temp: 26, status: '구름' },
+  { id: 'city_01', name: '서울', temp: 28, status: '맑음', color: 'royalblue' },
+  { id: 'city_02', name: '수원', temp: 24, status: '비', color: 'tomato' },
+  { id: 'city_03', name: '부산', temp: 26, status: '구름', color: 'mediumseagreen' },
 ])
 
 const searchQuery = ref('')
@@ -26,7 +26,9 @@ watch(selectedCityInfo, (newInfo) => {
 })
 
 watchEffect(() => {
-  console.log(`🤖 [watchEffect 자동 호출] 현재 검색어 '${searchQuery.value}'에 매칭되는 API 데이터를 필터링합니다.`)
+  console.log(
+    `🤖 [watchEffect 자동 호출] 현재 검색어 '${searchQuery.value}'에 매칭되는 API 데이터를 필터링합니다.`,
+  )
 })
 
 const showDetail = (cityName, status) => {
@@ -43,9 +45,30 @@ const showDetail = (cityName, status) => {
     <BaseDashboardCard>
       <h3>🏙️ 지역별 날씨 현황</h3>
 
-      <WeatherCard v-for="item in filteredWeatherList" :key="item.id" :city-item="item" @select-card="(msg) => (selectedCityInfo = msg)" @click-detail="showDetail" />
+      <WeatherCard
+        v-for="item in filteredWeatherList"
+        :key="item.id"
+        :city-item="item"
+        @select-card="(msg) => (selectedCityInfo = msg)"
+        @click-detail="showDetail"
+      >
+        <template #pretty-button="{ city, showDetail }">
+          <button
+            class="btn-detail custom-btn"
+            @click.stop="showDetail(city.name, city.status)"
+            :style="{ backgroundColor: city.color, color: '#fff' }"
+          >
+            도시 상징색은 - {{ city.color }} (정보 더보기)
+          </button>
+        </template>
+      </WeatherCard>
 
-      <p v-if="filteredWeatherList.length === 0" style="text-align: center; color: #e74c3c; padding: 10px 0">😭 검색 결과와 일치하는 도시가 없습니다.</p>
+      <p
+        v-if="filteredWeatherList.length === 0"
+        style="text-align: center; color: #e74c3c; padding: 10px 0"
+      >
+        😭 검색 결과와 일치하는 도시가 없습니다.
+      </p>
     </BaseDashboardCard>
 
     <div class="status-bar">
@@ -58,5 +81,14 @@ const showDetail = (cityName, status) => {
 .dashboard-wrapper {
   width: 600px;
   margin: 0 auto;
+}
+
+.custom-btn {
+  position: static;
+  margin-top: 8px;
+  background: #0984e3;
+  color: white;
+  border: none;
+  border-radius: 4px;
 }
 </style>

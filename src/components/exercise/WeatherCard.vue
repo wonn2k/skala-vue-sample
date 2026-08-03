@@ -9,6 +9,10 @@ defineProps({
 
 // 2. 상위로 송신할 두 가지 경로의 커스텀 이벤트 식별자 등록 (매크로)
 const emit = defineEmits(['select-card', 'click-detail'])
+
+const handleDetail = (cityName, status) => {
+  emit('click-detail', cityName, status)
+}
 </script>
 
 <template>
@@ -19,7 +23,11 @@ const emit = defineEmits(['select-card', 'click-detail'])
     <span v-if="cityItem.temp >= 25" class="badge hot">🔥 더움</span>
     <span v-else class="badge cool">❄️ 선선함</span>
 
-    <button class="btn-detail" @click.stop="emit('click-detail', cityItem.name, cityItem.status)">상세보기</button>
+    <slot name="pretty-button" :city="cityItem" :show-detail="handleDetail">
+      <button class="btn-detail" @click.stop="handleDetail(cityItem.name, cityItem.status)">
+        상세보기
+      </button>
+    </slot>
   </div>
 </template>
 
