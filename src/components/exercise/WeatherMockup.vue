@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const weatherList = ref([
   { id: 'city_01', name: '서울', temp: 28, status: '맑음' },
@@ -9,6 +9,22 @@ const weatherList = ref([
 
 const searchQuery = ref('')
 const selectedCityInfo = ref('카드를 클릭하거나 검색해주세요')
+const renderCount = ref(0)
+
+const filteredWeatherList = computed(() => {
+  const query = searchQuery.value.trim()
+  if (!query) return weatherList.value
+
+  return weatherList.value.filter((item) => item.name.includes(query))
+})
+
+// 콘솔에서도 결과를 출력하여 리렌더링 횟수를 확인할 수 있도록 watch를 활용
+watch(searchQuery, () => {
+  renderCount.value += 1
+  console.log(`[WeatherMockup] 카드 목록 리렌더 #${renderCount.value}`, {
+    query: searchQuery.value,
+  })
+})
 
 //추가 : 날씨 상태에 따른 이모지 반환 함수
 const getWeatherEmoji = (status) => {
@@ -42,11 +58,13 @@ const showDetail = (cityName, status) => {
       </p>
     </section>
 
-    <section class="list-box">
+    <section class="list-box" v-memo="[searchQuery]">
       <h3>🏙️ 지역별 날씨 현황</h3>
+      <!-- 추가 : v-memo를 활용하여 searchQuery가 변경될 때만 리렌더링, 결과를 출력 -->
+      <p>리렌더 추적: 콘솔에서 확인하세요 ({{ renderCount }}회)</p>
 
       <div
-        v-for="item in weatherList"
+        v-for="item in filteredWeatherList"
         :key="item.id"
         class="weather-card"
         @click="selectedCityInfo = `${item.name}이 선택되었습니다.`"
