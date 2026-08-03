@@ -22,9 +22,14 @@ export function useWeatherSearch(weatherList, initialMessage = '카드를 클릭
     return sourceList.value.filter((item) => item.name.includes(query))
   })
 
-  watch(selectedCityInfo, (newInfo) => {
-    console.log(`👁️‍🗨️ [watch 감지] 상태 바 문구가 업데이트되었습니다 -> "${newInfo}"`)
-  })
+  watch(
+    selectedCityInfo,
+    (newInfo) => {
+      console.log(`👁️‍🗨️ [watch 감지] 상태 바 문구가 업데이트되었습니다 -> "${newInfo}"`)
+    },
+    //추가 : immediate 옵션을 true로 설정하여 watch가 즉시 실행되도록 함
+    { immediate: true },
+  )
 
   watchEffect(() => {
     console.log(
