@@ -29,13 +29,14 @@ const showDetail = (cityName, status) => {
   <div class="dashboard-wrapper">
     <section class="search-box">
       <h3>🔍 도시 검색</h3>
-      <!-- input type="text" v-model="searchQuery" placeholder="검색할 도시 이름 입력" / -->
-      <input
+      <!-- 추가 : v-model.trim.lazy를 활용 - 엔터 입력 시에만 반영-->
+      <input type="text" v-model.trim.lazy="searchQuery" placeholder="검색할 도시 이름 입력" />
+      <!--input
         type="text"
         :value="searchQuery"
         @input="(e) => (searchQuery = e.target.value)"
         placeholder="검색할 도시 이름 입력"
-      />
+      /!-->
       <p>
         검색 중인 도시: <strong>{{ searchQuery }}</strong>
       </p>
