@@ -74,7 +74,7 @@ const handleFetchWeather = async () => {
       type="text"
       v-model="weatherInput"
       placeholder="한국의 도시 이름 입력"
-      @keydown.enter.prevent="changeCity('Korea', weatherInput)"
+      @keyup.enter.prevent="changeCity('Korea', weatherInput)"
     />
     <p>※ 도시 이름을 입력하고 엔터를 누르면 해당 도시의 날씨 데이터를 가져옵니다.(ex : 서울)</p>
     <br />
