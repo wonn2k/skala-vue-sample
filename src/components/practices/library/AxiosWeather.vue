@@ -7,7 +7,7 @@ const isLoading = ref(false)
 const weatherInput = ref('')
 const searchInProgress = ref(false)
 
-const API_KEY = '0da31619668aa066fcb0af547c4ef9e5'
+const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY
 const lat = ref(35.158582)
 const lon = ref(126.804975)
 
@@ -28,8 +28,8 @@ const changeCity = async (countryName, cityName) => {
   searchInProgress.value = true
   console.log(`선택된 국가: ${countryName}, 도시: ${cityName}`)
 
-  const SEARCH_URL = `http://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(cityName)}&limit=1&appid=${API_KEY}`
-
+  const SEARCH_URL = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(cityName)}
+  &limit=1&appid=${API_KEY}`
   try {
     const response = await axios.get(SEARCH_URL)
     if (response.data && response.data.length > 0) {
@@ -99,7 +99,6 @@ const handleFetchWeather = async () => {
     <div v-else>
       <p>아직 가져온 데이터가 없습니다. 버튼을 눌러 통신을 가동하세요.</p>
     </div>
-
   </div>
 </template>
 
@@ -125,5 +124,4 @@ const handleFetchWeather = async () => {
 .result-card strong {
   color: #1e3a8a;
 }
-
 </style>
