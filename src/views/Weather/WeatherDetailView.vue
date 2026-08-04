@@ -1,9 +1,34 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { Line } from 'vue-chartjs'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Filler,
+  Legend,
+} from 'chart.js'
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Filler,
+  Legend,
+)
 
 const route = useRoute()
 const router = useRouter()
+
+const weekDays = ['월', '화', '수', '목', '금', '토', '일']
 
 const mockWeatherDetailList = [
   {
@@ -14,6 +39,8 @@ const mockWeatherDetailList = [
     humidity: 55,
     windSpeed: 2.4,
     description: '오늘은 햇볕이 잘 들고 기분 좋은 날씨입니다.',
+    color: '#4f46e5',
+    weeklyTemps: [24, 25, 27, 28, 26, 29, 28],
   },
   {
     id: 'city_02',
@@ -23,6 +50,8 @@ const mockWeatherDetailList = [
     humidity: 88,
     windSpeed: 4.1,
     description: '비가 오고 있어 우산을 챙기는 것이 좋습니다.',
+    color: '#ef4444',
+    weeklyTemps: [22, 23, 24, 23, 24, 25, 24],
   },
   {
     id: 'city_03',
@@ -32,6 +61,8 @@ const mockWeatherDetailList = [
     humidity: 72,
     windSpeed: 3.3,
     description: '구름이 많아 쌀쌀한 느낌이 드는 날씨입니다.',
+    color: '#16a34a',
+    weeklyTemps: [25, 26, 27, 26, 26, 27, 26],
   },
 ]
 
@@ -44,6 +75,75 @@ const setSelectedCity = () => {
 
 const goBack = () => {
   router.push('/weather')
+}
+
+const weeklyTemps = computed(() => selectedCity.value?.weeklyTemps ?? [])
+const minWeeklyTemp = computed(() =>
+  weeklyTemps.value.length ? Math.min(...weeklyTemps.value) : 0,
+)
+const maxWeeklyTemp = computed(() =>
+  weeklyTemps.value.length ? Math.max(...weeklyTemps.value) : 0,
+)
+const chartColor = computed(() => selectedCity.value?.color ?? '#6366f1')
+
+const chartData = computed(() => ({
+  labels: weekDays.slice(0, weeklyTemps.value.length),
+  datasets: [
+    {
+      label: '기온',
+      data: weeklyTemps.value,
+      tension: 0.45,
+      fill: true,
+      backgroundColor: `${chartColor.value}33`,
+      borderColor: chartColor.value,
+      pointBackgroundColor: '#ffffff',
+      pointBorderColor: chartColor.value,
+      pointBorderWidth: 2,
+      pointRadius: 4,
+      pointHoverRadius: 6,
+      borderWidth: 3,
+      spanGaps: true,
+    },
+  ],
+}))
+
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      display: false,
+    },
+    tooltip: {
+      callbacks: {
+        label(context) {
+          return `${context.parsed.y}°C`
+        },
+      },
+    },
+  },
+  scales: {
+    x: {
+      grid: {
+        display: false,
+      },
+      ticks: {
+        color: '#6b7280',
+      },
+    },
+    y: {
+      grid: {
+        color: 'rgba(15, 23, 42, 0.08)',
+        borderDash: [4, 4],
+      },
+      ticks: {
+        color: '#6b7280',
+        callback(value) {
+          return `${value}°`
+        },
+      },
+    },
+  },
 }
 
 onMounted(setSelectedCity)
@@ -77,6 +177,20 @@ watch(() => route.params.cityID || route.params.cityId, setSelectedCity)
             <span>풍속</span>
             <strong>{{ selectedCity.windSpeed }}m/s</strong>
           </div>
+        </div>
+      </div>
+
+      <div class="weekly-chart">
+        <div class="chart-header">
+          <div>
+            <p class="eyebrow">최근 7일 기온</p>
+            <h3>{{ minWeeklyTemp }}°C ~ {{ maxWeeklyTemp }}°C</h3>
+          </div>
+          <span class="chart-label">일별 변화를 직관적으로 확인하세요</span>
+        </div>
+
+        <div class="chart-container">
+          <Line :data="chartData" :options="chartOptions" />
         </div>
       </div>
 
@@ -125,10 +239,18 @@ watch(() => route.params.cityID || route.params.cityId, setSelectedCity)
   text-transform: uppercase;
 }
 
-h2 {
+h2,
+h3 {
   margin: 0;
-  font-size: 1.9rem;
   color: #111827;
+}
+
+h2 {
+  font-size: 1.9rem;
+}
+
+h3 {
+  font-size: 1.2rem;
 }
 
 .subtitle {
@@ -216,6 +338,37 @@ h2 {
 .detail-card strong {
   font-size: 1.25rem;
   color: #111827;
+}
+
+.weekly-chart {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 22px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 22px;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.chart-label {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.chart-container {
+  width: 100%;
+  min-height: 260px;
+}
+
+.chart-container canvas {
+  width: 100% !important;
+  height: 260px !important;
 }
 
 .detail-note {
