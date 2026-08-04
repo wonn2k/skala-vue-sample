@@ -41,6 +41,7 @@ const setSelectedCity = () => {
   selectedCity.value = mockWeatherDetailList.find((city) => city.id === cityId) ?? null
 }
 
+//마운트 시점에 선택
 onMounted(() => {
   setSelectedCity()
 })

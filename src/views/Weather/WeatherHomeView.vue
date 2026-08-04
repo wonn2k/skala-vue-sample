@@ -42,9 +42,14 @@ const showDetail = (cityId) => {
           <button
             class="btn-detail custom-btn"
             @click.stop="showDetail(city.id)"
-            :style="{ backgroundColor: city.color, color: '#fff' }"
+            :style="{
+              border: `1px solid ${city.color}`,
+              boxShadow: `0 4px 10px ${city.color}55`,
+              color: '#1f2937',
+              backgroundColor: '#fff',
+            }"
           >
-            도시 상징색은 - {{ city.color }} (정보 더보기)
+            상세보기
           </button>
         </template>
       </WeatherCard>
@@ -70,11 +75,24 @@ const showDetail = (cityId) => {
 }
 
 .custom-btn {
-  position: static;
-  margin-top: 8px;
-  background: #0984e3;
-  color: white;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-top: 0;
+  padding: 8px 14px;
   border: none;
-  border-radius: 4px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.18);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.custom-btn:hover {
+  transform: translateY(calc(-50% - 1px));
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.22);
 }
 </style>
