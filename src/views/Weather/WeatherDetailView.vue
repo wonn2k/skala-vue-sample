@@ -28,6 +28,13 @@ ChartJS.register(
 
 import { useConfigStore } from '../../stores/configStore.js'
 
+const props = defineProps({
+  useStoreUnit: {
+    type: Boolean,
+    default: false,
+  },
+})
+
 const route = useRoute()
 const router = useRouter()
 
@@ -77,9 +84,13 @@ const setSelectedCity = () => {
 }
 
 const weeklyTemps = computed(() => selectedCity.value?.weeklyTemps ?? [])
-const convertedWeeklyTemps = computed(() =>
-  weeklyTemps.value.map((temp) => configStore.displayTemp(temp)),
-)
+const convertedWeeklyTemps = computed(() => {
+  if (!props.useStoreUnit) {
+    return weeklyTemps.value
+  }
+
+  return weeklyTemps.value.map((temp) => configStore.displayTemp(temp))
+})
 const minWeeklyTemp = computed(() =>
   convertedWeeklyTemps.value.length ? Math.min(...convertedWeeklyTemps.value) : 0,
 )
@@ -119,7 +130,7 @@ const chartOptions = computed(() => ({
     tooltip: {
       callbacks: {
         label(context) {
-          return `${context.parsed.y}${unitSymbol.value}`
+          return `${context.parsed.y}${props.useStoreUnit ? unitSymbol.value : '°C'}`
         },
       },
     },
@@ -141,7 +152,7 @@ const chartOptions = computed(() => ({
       ticks: {
         color: '#6b7280',
         callback(value) {
-          return `${value}${unitSymbol.value}`
+          return `${value}${props.useStoreUnit ? unitSymbol.value : '°C'}`
         },
       },
     },
@@ -159,7 +170,13 @@ const goBackMain = () => {
 const configStore = useConfigStore()
 const { unitSymbol } = storeToRefs(configStore)
 
-const convertedTemp = computed(() => configStore.displayTemp(selectedCity.value?.temp ?? 0))
+const convertedTemp = computed(() => {
+  if (!props.useStoreUnit) {
+    return selectedCity.value?.temp ?? 0
+  }
+
+  return configStore.displayTemp(selectedCity.value?.temp ?? 0)
+})
 </script>
 
 <template>
@@ -176,7 +193,7 @@ const convertedTemp = computed(() => configStore.displayTemp(selectedCity.value?
 
       <div class="weather-summary">
         <div class="summary-main">
-          <p class="temp-value">{{ convertedTemp }}{{ unitSymbol }}</p>
+          <p class="temp-value">{{ convertedTemp }}{{ props.useStoreUnit ? unitSymbol : '°C' }}</p>
           <span class="status-badge">{{ selectedCity.status }}</span>
         </div>
         <div class="summary-details">
@@ -195,7 +212,10 @@ const convertedTemp = computed(() => configStore.displayTemp(selectedCity.value?
         <div class="chart-header">
           <div>
             <p class="eyebrow">최근 7일 기온</p>
-            <h3>{{ minWeeklyTemp }}{{ unitSymbol }} ~ {{ maxWeeklyTemp }}{{ unitSymbol }}</h3>
+            <h3>
+              {{ minWeeklyTemp }}{{ props.useStoreUnit ? unitSymbol : '°C' }} ~ {{ maxWeeklyTemp
+              }}{{ props.useStoreUnit ? unitSymbol : '°C' }}
+            </h3>
           </div>
           <span class="chart-label">일별 변화를 직관적으로 확인하세요</span>
         </div>

@@ -2,10 +2,14 @@
 import { storeToRefs } from 'pinia'
 import { useConfigStore } from '../../stores/configStore.js'
 // 1. 상위로부터 단방향 주입받을 객체 데이터 규격 검수 (매크로)
-defineProps({
+const props = defineProps({
   cityItem: {
     type: Object,
     required: true,
+  },
+  useStoreUnit: {
+    type: Boolean,
+    default: false,
   },
 })
 
@@ -18,12 +22,22 @@ const handleDetail = (cityName, status) => {
 
 const configStore = useConfigStore()
 const { unitSymbol } = storeToRefs(configStore)
+
+const displayTemp = (temp) => {
+  if (props.useStoreUnit) {
+    return configStore.displayTemp(temp)
+  }
+
+  return temp
+}
 </script>
 
 <template>
   <div class="weather-card" @click="emit('select-card', `${cityItem.name}이 선택되었습니다.`)">
     <h4>{{ cityItem.name }} ({{ cityItem.status }})</h4>
-    <p>현재 기온: {{ configStore.displayTemp(cityItem.temp ?? 0) }}{{ unitSymbol }}</p>
+    <p>
+      현재 기온: {{ displayTemp(cityItem.temp ?? 0) }}{{ props.useStoreUnit ? unitSymbol : '°C' }}
+    </p>
 
     <span v-if="cityItem.temp >= 25" class="badge hot">🔥 더움</span>
     <span v-else class="badge cool">❄️ 선선함</span>

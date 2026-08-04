@@ -32,6 +32,7 @@ const showDetail = (cityName, status) => {
         v-for="item in filteredWeatherList"
         :key="item.id"
         :city-item="item"
+        :use-store-unit="false"
         @select-card="(msg) => (selectedCityInfo = msg)"
         @click-detail="showDetail"
       >

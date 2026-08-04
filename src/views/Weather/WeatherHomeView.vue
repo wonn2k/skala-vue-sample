@@ -1,13 +1,25 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
+
+import { useConfigStore } from '../../stores/configStore.js'
 
 import BaseDashboardCard from '../../components/exercise/BaseDashboardCard.vue'
 import SearchBar from '../../components/exercise/SearchBar.vue'
 import WeatherCard from '../../components/exercise/WeatherCard.vue'
 import { useWeatherSearch } from '../../components/exercise/useWeatherSearch.js'
 
+const props = defineProps({
+  useStoreUnit: {
+    type: Boolean,
+    default: false,
+  },
+})
+
 const router = useRouter()
+const configStore = useConfigStore()
+const { unitSymbol } = storeToRefs(configStore)
 
 const weatherList = ref([
   { id: 'city_01', name: '서울', temp: 28, status: '맑음', color: 'royalblue' },
@@ -16,6 +28,16 @@ const weatherList = ref([
 ])
 
 const { searchQuery, selectedCityInfo, filteredWeatherList } = useWeatherSearch(weatherList)
+
+const displayTemp = (temp) => {
+  if (props.useStoreUnit) {
+    return configStore.displayTemp(temp)
+  }
+
+  return temp
+}
+
+const unitLabel = computed(() => (props.useStoreUnit ? unitSymbol.value : '°C'))
 
 const showDetail = (cityId) => {
   router.push('/weather/' + cityId)
@@ -35,6 +57,7 @@ const showDetail = (cityId) => {
         v-for="item in filteredWeatherList"
         :key="item.id"
         :city-item="item"
+        :use-store-unit="props.useStoreUnit"
         @select-card="(msg) => (selectedCityInfo = msg)"
         @click-detail="showDetail"
       >
