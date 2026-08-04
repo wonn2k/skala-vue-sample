@@ -1,4 +1,6 @@
 <script setup>
+import { storeToRefs } from 'pinia'
+import { useConfigStore } from '../../stores/configStore.js'
 // 1. 상위로부터 단방향 주입받을 객체 데이터 규격 검수 (매크로)
 defineProps({
   cityItem: {
@@ -13,12 +15,15 @@ const emit = defineEmits(['select-card', 'click-detail'])
 const handleDetail = (cityName, status) => {
   emit('click-detail', cityName, status)
 }
+
+const configStore = useConfigStore()
+const { unitSymbol } = storeToRefs(configStore)
 </script>
 
 <template>
   <div class="weather-card" @click="emit('select-card', `${cityItem.name}이 선택되었습니다.`)">
     <h4>{{ cityItem.name }} ({{ cityItem.status }})</h4>
-    <p>현재 기온: {{ cityItem.temp }}°C</p>
+    <p>현재 기온: {{ configStore.displayTemp(cityItem.temp ?? 0) }}{{ unitSymbol }}</p>
 
     <span v-if="cityItem.temp >= 25" class="badge hot">🔥 더움</span>
     <span v-else class="badge cool">❄️ 선선함</span>

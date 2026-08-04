@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
 import { Line } from 'vue-chartjs'
 import {
@@ -24,6 +25,8 @@ ChartJS.register(
   Filler,
   Legend,
 )
+
+import { useConfigStore } from '../../stores/configStore.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -74,20 +77,23 @@ const setSelectedCity = () => {
 }
 
 const weeklyTemps = computed(() => selectedCity.value?.weeklyTemps ?? [])
+const convertedWeeklyTemps = computed(() =>
+  weeklyTemps.value.map((temp) => configStore.displayTemp(temp)),
+)
 const minWeeklyTemp = computed(() =>
-  weeklyTemps.value.length ? Math.min(...weeklyTemps.value) : 0,
+  convertedWeeklyTemps.value.length ? Math.min(...convertedWeeklyTemps.value) : 0,
 )
 const maxWeeklyTemp = computed(() =>
-  weeklyTemps.value.length ? Math.max(...weeklyTemps.value) : 0,
+  convertedWeeklyTemps.value.length ? Math.max(...convertedWeeklyTemps.value) : 0,
 )
 const chartColor = computed(() => selectedCity.value?.color ?? '#6366f1')
 
 const chartData = computed(() => ({
-  labels: weekDays.slice(0, weeklyTemps.value.length),
+  labels: weekDays.slice(0, convertedWeeklyTemps.value.length),
   datasets: [
     {
       label: '기온',
-      data: weeklyTemps.value,
+      data: convertedWeeklyTemps.value,
       tension: 0.45,
       fill: true,
       backgroundColor: `${chartColor.value}33`,
@@ -103,7 +109,7 @@ const chartData = computed(() => ({
   ],
 }))
 
-const chartOptions = {
+const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
@@ -113,7 +119,7 @@ const chartOptions = {
     tooltip: {
       callbacks: {
         label(context) {
-          return `${context.parsed.y}°C`
+          return `${context.parsed.y}${unitSymbol.value}`
         },
       },
     },
@@ -135,12 +141,12 @@ const chartOptions = {
       ticks: {
         color: '#6b7280',
         callback(value) {
-          return `${value}°`
+          return `${value}${unitSymbol.value}`
         },
       },
     },
   },
-}
+}))
 
 onMounted(setSelectedCity)
 
@@ -149,6 +155,11 @@ watch(() => route.params.cityID || route.params.cityId, setSelectedCity)
 const goBackMain = () => {
   router.push('/')
 }
+
+const configStore = useConfigStore()
+const { unitSymbol } = storeToRefs(configStore)
+
+const convertedTemp = computed(() => configStore.displayTemp(selectedCity.value?.temp ?? 0))
 </script>
 
 <template>
@@ -165,7 +176,7 @@ const goBackMain = () => {
 
       <div class="weather-summary">
         <div class="summary-main">
-          <p class="temp-value">{{ selectedCity.temp }}°C</p>
+          <p class="temp-value">{{ convertedTemp }}{{ unitSymbol }}</p>
           <span class="status-badge">{{ selectedCity.status }}</span>
         </div>
         <div class="summary-details">
@@ -184,7 +195,7 @@ const goBackMain = () => {
         <div class="chart-header">
           <div>
             <p class="eyebrow">최근 7일 기온</p>
-            <h3>{{ minWeeklyTemp }}°C ~ {{ maxWeeklyTemp }}°C</h3>
+            <h3>{{ minWeeklyTemp }}{{ unitSymbol }} ~ {{ maxWeeklyTemp }}{{ unitSymbol }}</h3>
           </div>
           <span class="chart-label">일별 변화를 직관적으로 확인하세요</span>
         </div>

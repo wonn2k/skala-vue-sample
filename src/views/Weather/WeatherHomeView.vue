@@ -77,22 +77,11 @@ const showDetail = (cityId) => {
 .custom-btn {
   position: absolute;
   right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 15px;
   margin-top: 0;
-  padding: 8px 14px;
+  background: #0984e3;
+  color: white;
   border: none;
-  border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.18);
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.custom-btn:hover {
-  transform: translateY(calc(-50% - 1px));
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.22);
+  border-radius: 4px;
 }
 </style>
