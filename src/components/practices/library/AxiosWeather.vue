@@ -28,8 +28,7 @@ const changeCity = async (countryName, cityName) => {
   searchInProgress.value = true
   console.log(`선택된 국가: ${countryName}, 도시: ${cityName}`)
 
-  const SEARCH_URL = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(cityName)}
-  &limit=1&appid=${API_KEY}`
+  const SEARCH_URL = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(cityName)},,410&limit=1&appid=${API_KEY}`
   try {
     const response = await axios.get(SEARCH_URL)
     if (response.data && response.data.length > 0) {
@@ -74,8 +73,8 @@ const handleFetchWeather = async () => {
     <input
       type="text"
       v-model="weatherInput"
-      placeholder="도시 이름 입력"
-      @keydown.enter.prevent="changeCity('KR', weatherInput)"
+      placeholder="한국의 도시 이름 입력"
+      @keydown.enter.prevent="changeCity('Korea', weatherInput)"
     />
     <p>※ 도시 이름을 입력하고 엔터를 누르면 해당 도시의 날씨 데이터를 가져옵니다.(ex : 서울)</p>
     <br />
