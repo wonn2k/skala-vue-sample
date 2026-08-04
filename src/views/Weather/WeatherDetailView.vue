@@ -73,10 +73,6 @@ const setSelectedCity = () => {
   selectedCity.value = mockWeatherDetailList.find((city) => city.id === cityId) ?? null
 }
 
-const goBack = () => {
-  router.push('/weather')
-}
-
 const weeklyTemps = computed(() => selectedCity.value?.weeklyTemps ?? [])
 const minWeeklyTemp = computed(() =>
   weeklyTemps.value.length ? Math.min(...weeklyTemps.value) : 0,
@@ -149,6 +145,10 @@ const chartOptions = {
 onMounted(setSelectedCity)
 
 watch(() => route.params.cityID || route.params.cityId, setSelectedCity)
+
+const goBackMain = () => {
+  router.push('/')
+}
 </script>
 
 <template>
@@ -160,7 +160,7 @@ watch(() => route.params.cityID || route.params.cityId, setSelectedCity)
           <h2>{{ selectedCity.name }}</h2>
           <p class="subtitle">{{ selectedCity.description }}</p>
         </div>
-        <button class="back-button" @click="goBack">← 목록으로</button>
+        <button class="back-button" @click="goBackMain">← 목록으로</button>
       </div>
 
       <div class="weather-summary">
@@ -193,17 +193,12 @@ watch(() => route.params.cityID || route.params.cityId, setSelectedCity)
           <Line :data="chartData" :options="chartOptions" />
         </div>
       </div>
-
-      <div class="detail-note">
-        <p>오늘의 한 줄 코멘트</p>
-        <p>{{ selectedCity.description }}</p>
-      </div>
     </div>
 
     <div v-else class="detail-wrapper empty-state">
       <h2>조회 결과가 없습니다.</h2>
       <p>요청한 도시 정보를 찾을 수 없습니다.</p>
-      <button class="back-button" @click="goBack">목록으로 돌아가기</button>
+      <button class="back-button" @click="goBackMain">목록으로 돌아가기</button>
     </div>
   </div>
 </template>
