@@ -5,6 +5,7 @@ import WeatherParent from './components/exercise/WeatherParent.vue'
 import UnitToggler from './components/exercise/UnitToggler.vue'
 import AxiosWeather from './components/practices/library/AxiosWeather.vue'
 import AxiosJson from './components/practices/library/AxiosJson.vue'
+import TuningPoints from './components/exercise/TuningPoints.vue'
 </script>
 
 <template>
@@ -12,16 +13,19 @@ import AxiosJson from './components/practices/library/AxiosJson.vue'
     <h1>⛅ 과제 1: 날씨 (Mockup)</h1>
     <hr />
     <WeatherMockup />
+    <TuningPoints :assignment="1" />
   </div>
   <div class="app-container">
     <h1>⛅ 과제 2: 날씨 (컴포지션)</h1>
     <hr />
     <WeatherComposition />
+    <TuningPoints :assignment="2" />
   </div>
   <div class="app-container">
     <h1>⛅ 과제 3: 날씨 (컴포넌트)</h1>
     <hr />
     <WeatherParent />
+    <TuningPoints :assignment="3" />
   </div>
   <div class="app-container">
     <h1>⛅ 과제 4: 라우터적용</h1>
@@ -41,6 +45,7 @@ import AxiosJson from './components/practices/library/AxiosJson.vue'
         </RouterView-->
       </main>
     </div>
+    <TuningPoints :assignment="4" />
   </div>
   <div class="app-container">
     <h1>⛅ 과제 5: 스토어적용</h1>
@@ -56,12 +61,14 @@ import AxiosJson from './components/practices/library/AxiosJson.vue'
         <RouterView :use-store-unit="true" />
       </main>
     </div>
+    <TuningPoints :assignment="5" />
   </div>
   <div class="app-container">
     <h1>⛅ 과제 6: Axios 적용</h1>
     <hr />
     <AxiosWeather />
     <AxiosJson />
+    <TuningPoints :assignment="6" />
   </div>
 </template>
 

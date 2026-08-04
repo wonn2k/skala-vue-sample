@@ -1,0 +1,19 @@
+{
+  "1": [
+    "날씨에 따른 이모티콘 추가"
+    ":value / @input 대신 v-model.trim.lazy를 적용하고 동작 차이 비교하기",
+    "WeatherMockup 카드 목록에 v-memo를 적용한 뒤 콘솔로 리렌더링 횟수 확인하기",
+    "온도 25도를 기준으로 라벨을 3단계(더움 / 보통 / 선선함) 로 나누고 v-else-if 추가하기"
+  ],
+  "2": [
+    "WeatherCard에 Named/Scoped Slot을 추가해서 \"상세보기 버튼\" 영역을 부모가 커스터마이징하게 만들기",
+  ],
+  "3": [
+    "filteredWeatherList 관련 로직(computed+watch)을 useWeatherSearch() Composable로 추출해 재사용하기",
+    "watch의 immediate:true 옵션을 넣어 최초 마운트 시에도 로그가 찍히는지 확인하기"
+    "도시별 색 mock 데이터 추가하여 WeatherCard의 버튼 테두리를 slot으로 커스터마이징하기"
+  ],
+  "4": ["도시별 일주일 기온 Mock 데이터 추가", "디테일 페이지에 chart.js를 활용한 라인 차트 구현", "서비스 소개 및 디테일 페이지에 돌아가기 추가"],
+  "5": ["useConfigStore를 활용하여 단위 변경 기능 구현"],
+  "6": ["OpenWeatherMap API를 활용하여 Axios로 원하는 한국 도시의 날씨 데이터 수신"],
+}
