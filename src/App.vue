@@ -3,6 +3,8 @@ import WeatherMockup from './components/exercise/WeatherMockup.vue'
 import WeatherComposition from './components/exercise/WeatherComposition.vue'
 import WeatherParent from './components/exercise/WeatherParent.vue'
 import UnitToggler from './components/exercise/UnitToggler.vue'
+import AxiosWeather from './components/practices/library/AxiosWeather.vue'
+import AxiosJson from './components/practices/library/AxiosJson.vue'
 </script>
 
 <template>
@@ -54,6 +56,12 @@ import UnitToggler from './components/exercise/UnitToggler.vue'
         <RouterView :use-store-unit="true" />
       </main>
     </div>
+  </div>
+  <div class="app-container">
+    <h1>⛅ 과제 6: Axios 적용</h1>
+    <hr />
+    <AxiosWeather />
+    <AxiosJson />
   </div>
 </template>
 
