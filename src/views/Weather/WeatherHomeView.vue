@@ -85,7 +85,8 @@ const showDetail = (cityId) => {
 .custom-btn {
   position: absolute;
   right: 12px;
-  top: 15px;
+  top: 50%;
+  transform: translateY(-50%);
   margin-top: 0;
   background: #0984e3;
   color: white;
