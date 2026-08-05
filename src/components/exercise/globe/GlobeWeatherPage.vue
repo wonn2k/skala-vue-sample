@@ -19,6 +19,9 @@ const {
   recommendation,
   isLoading: isRecommendationLoading,
   errorMessage: recommendationErrorMessage,
+  errorCode: recommendationErrorCode,
+  cooldownSeconds,
+  willAutoRetry,
   canRequest,
   locationLabel,
   requestRecommendations,
@@ -72,6 +75,9 @@ const {
       :can-request="canRequest"
       :is-loading="isRecommendationLoading"
       :error-message="recommendationErrorMessage"
+      :error-code="recommendationErrorCode"
+      :cooldown-seconds="cooldownSeconds"
+      :will-auto-retry="willAutoRetry"
       @request="requestRecommendations"
     />
   </main>

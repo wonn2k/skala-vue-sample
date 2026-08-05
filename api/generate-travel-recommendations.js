@@ -78,6 +78,11 @@ const parseBody = (body) => {
   }
 }
 
+const sendRetryableError = (response, status, code, message, retryAfter) => {
+  response.setHeader('Retry-After', String(retryAfter))
+  return response.status(status).json({ code, message, retryAfter })
+}
+
 const formatNumber = (value, fallback = '정보 없음') =>
   Number.isFinite(value) ? String(Math.round(value * 10) / 10) : fallback
 
@@ -106,7 +111,13 @@ export default async function handler(request, response) {
   }
 
   if (isRateLimited(getClientAddress(request))) {
-    return response.status(429).json({ message: '추천 요청이 많습니다. 10분 뒤 다시 시도해 주세요.' })
+    return sendRetryableError(
+      response,
+      429,
+      'REQUEST_LIMITED',
+      '추천 요청 횟수가 많습니다. 잠시 후 다시 시도해 주세요.',
+      600,
+    )
   }
 
   const body = parseBody(request.body)
@@ -165,7 +176,36 @@ export default async function handler(request, response) {
 
     if (!geminiResponse.ok) {
       console.error('Gemini 추천 생성 실패:', result.error?.message ?? result)
+
+      if (geminiResponse.status === 503) {
+        return sendRetryableError(
+          response,
+          503,
+          'GEMINI_OVERLOADED',
+          '현재 Gemini 요청이 많습니다. 기존 결과는 유지되며 잠시 후 자동으로 다시 시도합니다.',
+          30,
+        )
+      }
+
+      if (geminiResponse.status === 429) {
+        return sendRetryableError(
+          response,
+          429,
+          'GEMINI_QUOTA_EXCEEDED',
+          'Gemini 무료 사용 한도에 도달했습니다. 한도가 초기화된 후 다시 시도해 주세요.',
+          60,
+        )
+      }
+
+      if ([401, 403].includes(geminiResponse.status)) {
+        return response.status(geminiResponse.status).json({
+          code: 'GEMINI_AUTH_ERROR',
+          message: 'Gemini API 키 또는 모델 사용 권한을 확인해 주세요.',
+        })
+      }
+
       return response.status(geminiResponse.status).json({
+        code: 'GEMINI_REQUEST_FAILED',
         message: 'AI 여행 추천을 생성하지 못했습니다. 잠시 후 다시 시도해 주세요.',
       })
     }

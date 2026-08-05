@@ -1,13 +1,28 @@
 <script setup>
-defineProps({
+import { computed } from 'vue'
+
+const props = defineProps({
   recommendation: { type: Object, default: null },
   locationLabel: { type: String, default: '' },
   canRequest: { type: Boolean, default: false },
   isLoading: { type: Boolean, default: false },
   errorMessage: { type: String, default: '' },
+  errorCode: { type: String, default: '' },
+  cooldownSeconds: { type: Number, default: 0 },
+  willAutoRetry: { type: Boolean, default: false },
 })
 
 defineEmits(['request'])
+
+const isRetryableError = computed(() =>
+  ['GEMINI_OVERLOADED', 'GEMINI_QUOTA_EXCEEDED', 'REQUEST_LIMITED'].includes(props.errorCode),
+)
+
+const requestButtonLabel = computed(() => {
+  if (props.isLoading) return '추천을 준비하는 중...'
+  if (props.cooldownSeconds > 0) return `${props.cooldownSeconds}초 후 다시 시도`
+  return props.recommendation ? '다시 추천받기' : 'AI 추천받기'
+})
 </script>
 
 <template>
@@ -26,16 +41,33 @@ defineEmits(['request'])
         @click="$emit('request')"
       >
         <span v-if="isLoading" class="button-spinner" aria-hidden="true"></span>
-        {{ isLoading ? '추천을 준비하는 중...' : recommendation ? '다시 추천받기' : 'AI 추천받기' }}
+        {{ requestButtonLabel }}
       </button>
     </header>
 
     <p v-if="!locationLabel" class="helper-message">
       지구본에서 위치를 선택하고 날씨 조회가 끝나면 추천받을 수 있습니다.
     </p>
-    <p v-if="errorMessage" class="error-message" role="alert">{{ errorMessage }}</p>
+    <div
+      v-if="errorMessage"
+      class="status-message"
+      :class="{ 'status-message--warning': isRetryableError }"
+      role="alert"
+    >
+      <span class="status-message__icon" aria-hidden="true">
+        {{ isRetryableError ? '!' : '×' }}
+      </span>
+      <div>
+        <strong>{{ isRetryableError ? '잠시 기다려 주세요' : '추천을 불러오지 못했습니다' }}</strong>
+        <p>{{ errorMessage }}</p>
+        <small v-if="cooldownSeconds">
+          {{ cooldownSeconds }}초 후
+          {{ willAutoRetry ? '자동으로 한 번 다시 시도합니다.' : '다시 시도할 수 있습니다.' }}
+        </small>
+      </div>
+    </div>
 
-    <div v-if="isLoading" class="loading-state">
+    <div v-if="isLoading && !recommendation" class="loading-state">
       <span class="large-spinner" aria-hidden="true"></span>
       <strong>날씨와 여행지를 함께 살펴보고 있습니다</strong>
       <p>잠시만 기다려 주세요.</p>
@@ -174,18 +206,61 @@ defineEmits(['request'])
   margin-right: 8px;
 }
 
-.helper-message,
-.error-message {
+.helper-message {
   margin: 18px 0 0;
+  color: #64748b;
   font-size: 12px;
 }
 
-.helper-message {
-  color: #64748b;
+.status-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px solid #fecdd3;
+  border-radius: 13px;
+  background: #fff1f2;
+  color: #9f1239;
 }
 
-.error-message {
-  color: #be123c;
+.status-message--warning {
+  border-color: #fde68a;
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.status-message__icon {
+  display: grid;
+  flex: 0 0 27px;
+  width: 27px;
+  height: 27px;
+  place-items: center;
+  border-radius: 8px;
+  background: rgb(190 18 60 / 10%);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.status-message--warning .status-message__icon {
+  background: rgb(217 119 6 / 12%);
+}
+
+.status-message strong {
+  font-size: 12px;
+}
+
+.status-message p {
+  margin: 4px 0 0;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.status-message small {
+  display: block;
+  margin-top: 5px;
+  font-size: 10px;
+  font-weight: 700;
 }
 
 .loading-state,
