@@ -79,12 +79,12 @@ import GlobeHeader from './components/exercise/globe/GlobeHeader.vue'
       <TuningPoints :assignment="7" />
     </div>
     <div class="app-container">
-      <h1>⛅ 과제 8: 과제 7에 API를 이용한 기능 추가</h1>
+      <h1>⛅ 과제 8: API를 사용한 기능</h1>
       <hr />
-      <div class="dashboard-wrapper">
-        <ExerciseNav :assignment="8" dashboard-link-class="assignment-8-dashboard-link" />
-        <WeatherParentElemplus />
-      </div>
+      <RouterLink to="/" class="globe-feature-link">
+        <span aria-hidden="true">🌍</span>
+        지구본 메인페이지에서 API 기능 체험하기
+      </RouterLink>
       <TuningPoints :assignment="8" />
     </div>
   </div>
@@ -128,8 +128,28 @@ import GlobeHeader from './components/exercise/globe/GlobeHeader.vue'
   justify-self: center;
 }
 
-.assignment-8-dashboard-link {
-  font-size: 15px;
+.globe-feature-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 12px 16px;
+  border: 1px solid #bae6fd;
+  border-radius: 10px;
+  background: #f0f9ff;
+  color: #0369a1;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.globe-feature-link:hover {
+  border-color: #38bdf8;
+  background: #e0f2fe;
 }
 
 @media (max-width: 1399px) {
