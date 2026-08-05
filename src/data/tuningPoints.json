@@ -27,5 +27,9 @@
     "ElEmpty로 검색 결과가 없는 상태를 표시하고 ElAlert로 선택한 도시 정보 출력",
     "ElMessage를 활용하여 기존 window.alert를 닫을 수 있는 안내 메시지로 개선",
     "필요한 Element Plus 컴포넌트만 두 _elemplus.vue 파일에서 직접 import하여 사용 범위 제한"
+  ],
+  "8": [
+    "과제 7의 Element Plus 날씨 화면에 Vue Router 네비게이션 바 적용",
+    "날씨 대시보드, 서비스 소개, 지구본에서 찾기 화면을 RouterLink로 연결"
   ]
 }
