@@ -48,19 +48,28 @@ defineEmits(['request'])
         <div class="destination-area">
           <h3>추천 관광지</h3>
           <ol class="destination-list">
-            <li v-for="destination in recommendation.destinations" :key="destination.name">
-              <div class="destination-title">
-                <strong>{{ destination.name }}</strong>
-                <span>{{ destination.type }}</span>
+            <li
+              v-for="(destination, index) in recommendation.destinations"
+              :key="destination.name"
+            >
+              <div class="destination-card__top">
+                <span class="destination-number">0{{ index + 1 }}</span>
+                <div class="destination-title">
+                  <strong>{{ destination.name }}</strong>
+                  <span>{{ destination.type }}</span>
+                </div>
               </div>
               <p>{{ destination.reason }}</p>
-              <small>날씨 팁 · {{ destination.weatherTip }}</small>
+              <div class="weather-tip">
+                <span aria-hidden="true">☂</span>
+                <small><strong>날씨 팁</strong>{{ destination.weatherTip }}</small>
+              </div>
             </li>
           </ol>
         </div>
 
         <aside class="outfit-card">
-          <div class="outfit-icon">◌</div>
+          <div class="outfit-icon" aria-hidden="true">✦</div>
           <p class="outfit-label">WEATHER OUTFIT</p>
           <h3>추천 복장</h3>
           <p>{{ recommendation.outfit.overview }}</p>
@@ -215,13 +224,15 @@ defineEmits(['request'])
 
 .recommendation-summary {
   margin: 24px 0 0;
-  padding: 16px 18px;
-  border-left: 3px solid #38bdf8;
-  border-radius: 0 12px 12px 0;
+  padding: 17px 20px;
+  border: 1px solid #bae6fd;
+  border-left: 4px solid #0ea5e9;
+  border-radius: 4px 14px 14px 4px;
   background: #f0f9ff;
-  color: #334155;
+  color: #1e3a5f;
   font-size: 13px;
-  line-height: 1.7;
+  font-weight: 600;
+  line-height: 1.75;
 }
 
 .recommendation-grid {
@@ -236,6 +247,7 @@ defineEmits(['request'])
   margin: 0;
   color: #0f172a;
   font-size: 17px;
+  font-weight: 800;
 }
 
 .destination-list {
@@ -247,17 +259,47 @@ defineEmits(['request'])
 }
 
 .destination-list li {
-  padding: 17px;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
+  padding: 18px;
+  border: 1px solid #d8e5ee;
+  border-radius: 16px;
   background: #ffffff;
+  box-shadow: 0 8px 22px rgb(15 23 42 / 5%);
+  color: #334155;
+}
+
+.destination-card__top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.destination-number {
+  display: grid;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 10px;
+  background: #08243c;
+  color: #7dd3fc;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
 }
 
 .destination-title {
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+.destination-title strong {
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.35;
 }
 
 .destination-title span {
@@ -270,27 +312,60 @@ defineEmits(['request'])
 }
 
 .destination-list p {
-  margin: 9px 0;
-  color: #475569;
+  margin: 13px 0;
+  color: #40516a;
   font-size: 12px;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
-.destination-list small {
-  color: #0284c7;
+.weather-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f0f9ff;
+  color: #0369a1;
+}
+
+.weather-tip > span {
+  line-height: 1.4;
+}
+
+.weather-tip small {
+  color: #245878;
   font-size: 10px;
+  line-height: 1.55;
+}
+
+.weather-tip small strong {
+  margin-right: 7px;
+  color: #0369a1;
+  font-weight: 800;
 }
 
 .outfit-card {
-  padding: 22px;
+  align-self: stretch;
+  padding: 24px;
+  border: 1px solid rgb(125 211 252 / 13%);
   border-radius: 18px;
-  background: #071a2d;
-  color: #dbeafe;
+  background:
+    radial-gradient(circle at 100% 0%, rgb(14 165 233 / 17%), transparent 34%),
+    #071a2d;
+  box-shadow: 0 14px 30px rgb(2 12 27 / 14%);
+  color: #d9e8f5;
 }
 
 .outfit-icon {
-  color: #38bdf8;
-  font-size: 32px;
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid rgb(125 211 252 / 30%);
+  border-radius: 12px;
+  background: rgb(14 165 233 / 10%);
+  color: #7dd3fc;
+  font-size: 18px;
 }
 
 .outfit-label {
@@ -306,6 +381,7 @@ defineEmits(['request'])
 }
 
 .outfit-card > p:not(.outfit-label) {
+  color: #c7d7e6;
   font-size: 12px;
   line-height: 1.65;
 }
@@ -314,14 +390,33 @@ defineEmits(['request'])
   display: grid;
   gap: 8px;
   margin: 16px 0;
-  padding-left: 20px;
+  padding: 14px 0;
+  border-top: 1px solid rgb(148 163 184 / 18%);
+  border-bottom: 1px solid rgb(148 163 184 / 18%);
   font-size: 12px;
+  list-style: none;
+}
+
+.outfit-card li {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  color: #f1f5f9;
+  line-height: 1.55;
+}
+
+.outfit-card li::before {
+  color: #38bdf8;
+  content: '✓';
+  font-weight: 800;
 }
 
 .outfit-caution {
-  padding-top: 14px;
-  border-top: 1px solid rgb(148 163 184 / 25%);
-  color: #bae6fd;
+  margin-bottom: 0;
+  padding: 11px 12px;
+  border-radius: 10px;
+  background: rgb(56 189 248 / 9%);
+  color: #bae6fd !important;
 }
 
 @keyframes spin {
