@@ -6,6 +6,10 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
+  optimizeDeps: {
+    // MapLibre 6의 ESM worker URL을 Vite 사전 번들러가 잘못 재작성하지 않도록 원본 모듈로 로드한다.
+    exclude: ['maplibre-gl'],
+  },
   plugins: [
     vue(),
     vueDevTools(),

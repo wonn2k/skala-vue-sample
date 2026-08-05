@@ -23,6 +23,11 @@ const router = createRouter({
       component: () => import('../views/Weather/WeatherDetailView.vue'),
     },
     {
+      path: '/globe',
+      name: 'GlobeWeather',
+      component: () => import('../components/exercise/globe/GlobeWeatherPage.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: () => import('../views/NotFoundView.vue'),

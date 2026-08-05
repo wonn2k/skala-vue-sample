@@ -10,76 +10,104 @@ import TuningPoints from './components/exercise/TuningPoints.vue'
 </script>
 
 <template>
-  <div class="app-container">
-    <h1>⛅ 과제 1: 날씨 (Mockup)</h1>
-    <hr />
-    <WeatherMockup />
-    <TuningPoints :assignment="1" />
+  <div v-if="$route.name === 'GlobeWeather'" class="globe-route-shell">
+    <nav class="navigation-bar globe-navigation" aria-label="날씨 서비스 메뉴">
+      <RouterLink to="/" class="nav-item">🌦️ 날씨 대시보드</RouterLink>
+      <span class="divider">|</span>
+      <RouterLink to="/about" class="nav-item">ℹ️ 서비스 소개</RouterLink>
+      <span class="divider">|</span>
+      <RouterLink to="/globe" class="nav-item">🌍 지구본에서 찾기</RouterLink>
+    </nav>
+    <RouterView />
   </div>
-  <div class="app-container">
-    <h1>⛅ 과제 2: 날씨 (컴포지션)</h1>
-    <hr />
-    <WeatherComposition />
-    <TuningPoints :assignment="2" />
-  </div>
-  <div class="app-container">
-    <h1>⛅ 과제 3: 날씨 (컴포넌트)</h1>
-    <hr />
-    <WeatherParent />
-    <TuningPoints :assignment="3" />
-  </div>
-  <div class="app-container">
-    <h1>⛅ 과제 4: 라우터적용</h1>
-    <hr />
-    <div class="dashboard-wrapper">
-      <nav class="navigation-bar">
-        <RouterLink to="/" class="nav-item">🌦️ 날씨 대시보드</RouterLink>
-        <span class="divider">|</span>
-        <RouterLink to="/about" class="nav-item">ℹ️ 서비스 소개</RouterLink>
-      </nav>
-      <main>
-        <RouterView :use-store-unit="false" />
-        <!-- RouterView v-slot="{ Component }">
+  <div v-else class="assignment-list">
+    <div class="app-container">
+      <h1>⛅ 과제 1: 날씨 (Mockup)</h1>
+      <hr />
+      <WeatherMockup />
+      <TuningPoints :assignment="1" />
+    </div>
+    <div class="app-container">
+      <h1>⛅ 과제 2: 날씨 (컴포지션)</h1>
+      <hr />
+      <WeatherComposition />
+      <TuningPoints :assignment="2" />
+    </div>
+    <div class="app-container">
+      <h1>⛅ 과제 3: 날씨 (컴포넌트)</h1>
+      <hr />
+      <WeatherParent />
+      <TuningPoints :assignment="3" />
+    </div>
+    <div class="app-container">
+      <h1>⛅ 과제 4: 라우터적용</h1>
+      <hr />
+      <div class="dashboard-wrapper">
+        <nav class="navigation-bar">
+          <RouterLink to="/" class="nav-item">🌦️ 날씨 대시보드</RouterLink>
+          <span class="divider">|</span>
+          <RouterLink to="/about" class="nav-item">ℹ️ 서비스 소개</RouterLink>
+          <span class="divider">|</span>
+          <RouterLink to="/globe" class="nav-item">🌍 지구본에서 찾기</RouterLink>
+        </nav>
+        <main>
+          <RouterView :use-store-unit="false" />
+          <!-- RouterView v-slot="{ Component }">
           <KeepAlive>
             <component :is="Component" />
           </KeepAlive>
         </RouterView-->
-      </main>
+        </main>
+      </div>
+      <TuningPoints :assignment="4" />
     </div>
-    <TuningPoints :assignment="4" />
-  </div>
-  <div class="app-container">
-    <h1>⛅ 과제 5: 스토어적용</h1>
-    <hr />
-    <div class="dashboard-wrapper">
-      <nav class="navigation-bar">
-        <RouterLink to="/" class="nav-item">🌦️ 날씨 대시보드</RouterLink>
-        <span class="divider">|</span>
-        <RouterLink to="/about" class="nav-item">ℹ️ 서비스 소개</RouterLink>
-        <UnitToggler />
-      </nav>
-      <main>
-        <RouterView :use-store-unit="true" />
-      </main>
+    <div class="app-container">
+      <h1>⛅ 과제 5: 스토어적용</h1>
+      <hr />
+      <div class="dashboard-wrapper">
+        <nav class="navigation-bar">
+          <RouterLink to="/" class="nav-item">🌦️ 날씨 대시보드</RouterLink>
+          <span class="divider">|</span>
+          <RouterLink to="/about" class="nav-item">ℹ️ 서비스 소개</RouterLink>
+          <span class="divider">|</span>
+          <RouterLink to="/globe" class="nav-item">🌍 지구본에서 찾기</RouterLink>
+          <UnitToggler />
+        </nav>
+        <main>
+          <RouterView :use-store-unit="true" />
+        </main>
+      </div>
+      <TuningPoints :assignment="5" />
     </div>
-    <TuningPoints :assignment="5" />
-  </div>
-  <div class="app-container">
-    <h1>⛅ 과제 6: Axios 적용</h1>
-    <hr />
-    <AxiosWeather />
-    <AxiosJson />
-    <TuningPoints :assignment="6" />
-  </div>
-  <div class="app-container">
-    <h1>⛅ 과제 7: 과제 3에 Element Plus 적용</h1>
-    <hr />
-    <WeatherParentElemplus />
-    <TuningPoints :assignment="7" />
+    <div class="app-container">
+      <h1>⛅ 과제 6: Axios 적용</h1>
+      <hr />
+      <AxiosWeather />
+      <AxiosJson />
+      <TuningPoints :assignment="6" />
+    </div>
+    <div class="app-container">
+      <h1>⛅ 과제 7: 과제 3에 Element Plus 적용</h1>
+      <hr />
+      <WeatherParentElemplus />
+      <TuningPoints :assignment="7" />
+    </div>
   </div>
 </template>
 
 <style>
 /* ⚠️ 외부 스타일 파일(예: 버튼 디자인 뭉치)을 이 방 안으로 쏙 가리켜 가져옵니다 */
 @import '@/assets/exercise.css';
+
+.globe-route-shell {
+  box-sizing: border-box;
+  min-height: 100vh;
+  padding: 20px;
+  background: #f4f8fb;
+}
+
+.globe-navigation {
+  width: min(100% - 20px, 1140px);
+  margin: 0 auto;
+}
 </style>
