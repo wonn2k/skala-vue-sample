@@ -6,6 +6,11 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'GlobeWeather',
+      component: () => import('../components/exercise/globe/GlobeWeatherPage.vue'),
+    },
+    {
+      path: '/assignments',
       name: 'WeatherHome',
       component: WeatherHomeView,
     },
@@ -24,8 +29,7 @@ const router = createRouter({
     },
     {
       path: '/globe',
-      name: 'GlobeWeather',
-      component: () => import('../components/exercise/globe/GlobeWeatherPage.vue'),
+      redirect: '/',
     },
     {
       path: '/:pathMatch(.*)*',

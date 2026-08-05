@@ -1,7 +1,9 @@
 <script setup>
 import GlobeMap from './GlobeMap.vue'
 import LocationInfoPanel from './LocationInfoPanel.vue'
+import TravelRecommendations from './TravelRecommendations.vue'
 import { useGlobeLocation } from './useGlobeLocation.js'
+import { useTravelRecommendations } from './useTravelRecommendations.js'
 
 const {
   selectedCoordinates,
@@ -12,6 +14,19 @@ const {
   warningMessages,
   selectLocation,
 } = useGlobeLocation()
+
+const {
+  recommendation,
+  isLoading: isRecommendationLoading,
+  errorMessage: recommendationErrorMessage,
+  canRequest,
+  locationLabel,
+  requestRecommendations,
+} = useTravelRecommendations({
+  coordinates: selectedCoordinates,
+  weather,
+  place,
+})
 </script>
 
 <template>
@@ -35,6 +50,15 @@ const {
         :warning-messages="warningMessages"
       />
     </div>
+
+    <TravelRecommendations
+      :recommendation="recommendation"
+      :location-label="locationLabel"
+      :can-request="canRequest"
+      :is-loading="isRecommendationLoading"
+      :error-message="recommendationErrorMessage"
+      @request="requestRecommendations"
+    />
   </main>
 </template>
 

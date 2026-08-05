@@ -5,7 +5,10 @@
     <h2>Weather About</h2>
     <p>이 페이지는 과제용 날씨 앱의 소개 화면입니다.</p>
 
-    <p>다 읽으셨으면 돌아가시죠 <RouterLink to="/" class="back-link">네</RouterLink></p>
+    <p>
+      다 읽으셨으면 돌아가시죠
+      <RouterLink to="/assignments" class="back-link">네</RouterLink>
+    </p>
   </div>
 </template>
 

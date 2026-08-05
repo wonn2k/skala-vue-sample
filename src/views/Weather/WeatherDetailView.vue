@@ -164,7 +164,7 @@ onMounted(setSelectedCity)
 watch(() => route.params.cityID || route.params.cityId, setSelectedCity)
 
 const goBackMain = () => {
-  router.push('/')
+  router.push('/assignments')
 }
 
 const configStore = useConfigStore()
