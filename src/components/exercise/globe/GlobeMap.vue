@@ -2,6 +2,10 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import * as maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
+import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
+
+// MapLibre 6 worker를 Vite 정적 자산으로 출력해 배포 환경에서도 올바른 MIME 타입으로 로드한다.
+maplibregl.setWorkerUrl(maplibreWorkerUrl)
 
 const emit = defineEmits(['select-location'])
 
