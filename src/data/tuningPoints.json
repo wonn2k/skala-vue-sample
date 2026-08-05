@@ -31,6 +31,7 @@
   "8": [
     "과제 7의 Element Plus 날씨 화면에 Vue Router 네비게이션 바 적용",
     "날씨 대시보드, 서비스 소개, 지구본에서 찾기 화면을 RouterLink로 연결",
+    "네비게이션 바를 ExerciseNav 공용 컴포넌트로 분리하고 과제 번호에 따라 지구본 메뉴 노출 여부 제어",
     "MapLibre GL JS와 MapLibre 데모 지도 스타일을 활용하여 회전·확대할 수 있는 3D 지구본과 위치 선택 마커 구현",
     "OpenStreetMap Nominatim 역지오코딩 API를 활용하여 선택한 지점의 위도·경도와 국가·도시·지역 정보 조회",
     "OpenWeatherMap 좌표 기반 날씨 API를 활용하여 지구본에서 선택한 위치의 현재 날씨·기온·체감온도·습도·풍속 정보 조회"

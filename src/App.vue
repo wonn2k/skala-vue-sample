@@ -77,7 +77,7 @@ import ExerciseNav from './components/exercise/ExerciseNav.vue'
       <TuningPoints :assignment="7" />
     </div>
     <div class="app-container">
-      <h1>⛅ 과제 8: 과제 7에 라우터 적용</h1>
+      <h1>⛅ 과제 8: 과제 7에 API를 이용한 기능 추가</h1>
       <hr />
       <div class="dashboard-wrapper">
         <ExerciseNav :assignment="8" dashboard-link-class="assignment-8-dashboard-link" />
