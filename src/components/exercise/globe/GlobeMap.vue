@@ -1,4 +1,9 @@
 <script setup>
+/**
+ * MapLibre GL의 globe 스타일을 Vue 생명주기에 맞춰 생성·정리하는 지도 UI 컴포넌트입니다.
+ * 사용자가 지도를 클릭하면 마커를 이동하고 위도/경도를 select-location 이벤트로 부모에 전달합니다.
+ * 날씨나 장소 조회는 수행하지 않아 지도 표현과 비즈니스 로직의 결합을 피합니다.
+ */
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import * as maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
@@ -10,9 +15,11 @@ maplibregl.setWorkerUrl(maplibreWorkerUrl)
 const emit = defineEmits(['select-location'])
 
 const mapContainer = ref(null)
+// MapLibre 인스턴스는 DOM 기반 외부 객체이므로 Vue의 깊은 반응형 상태로 만들지 않습니다.
 let map = null
 let selectedMarker = null
 
+// MapLibre 클릭 이벤트의 lngLat을 검증한 뒤 앱 공통 좌표 객체로 변환합니다.
 const selectPoint = ({ lngLat }) => {
   const latitude = Number(lngLat?.lat)
   const longitude = Number(lngLat?.lng)
@@ -24,6 +31,7 @@ const selectPoint = ({ lngLat }) => {
   emit('select-location', { latitude, longitude })
 }
 
+// 실제 컨테이너 DOM이 준비된 뒤 지도와 확대/회전 컨트롤을 초기화합니다.
 onMounted(() => {
   map = new maplibregl.Map({
     container: mapContainer.value,
@@ -39,6 +47,7 @@ onMounted(() => {
   map.on('click', selectPoint)
 })
 
+// 라우트 이동 시 이벤트, 마커, WebGL 지도 자원을 명시적으로 해제합니다.
 onBeforeUnmount(() => {
   map?.off('click', selectPoint)
   selectedMarker?.remove()
@@ -47,6 +56,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  <!-- 지도 컨테이너 위에 조작 방법을 안내하는 고정 오버레이를 겹칩니다. -->
   <div class="globe-shell">
     <div ref="mapContainer" class="globe-map" aria-label="위치를 선택할 수 있는 3D 지구본"></div>
     <div class="globe-guide">
@@ -57,6 +67,7 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+/* WebGL 지도가 채울 고정 높이의 어두운 지구본 프레임 */
 .globe-shell {
   position: relative;
   min-height: 610px;
@@ -72,6 +83,7 @@ onBeforeUnmount(() => {
   inset: 0;
 }
 
+/* 지도 이동을 방해하지 않으면서 하단 중앙에 떠 있는 사용 안내 */
 .globe-guide {
   position: absolute;
   z-index: 1;
@@ -100,6 +112,7 @@ onBeforeUnmount(() => {
   box-shadow: 0 0 0 5px rgb(56 189 248 / 15%);
 }
 
+/* MapLibre가 내부 생성한 컨트롤에도 페이지 디자인을 적용합니다. */
 :deep(.maplibregl-ctrl-group) {
   overflow: hidden;
   border: 1px solid rgb(255 255 255 / 18%);

@@ -1,4 +1,9 @@
 <script setup>
+/**
+ * Composition API의 핵심 반응형 기능을 한 파일에서 실습하는 날씨 대시보드입니다.
+ * ref로 원본 상태를 보관하고, computed로 검색 결과를 파생하며, watch와 watchEffect로
+ * 상태 변화에 따른 부수 효과를 관찰합니다. 이 컴포넌트는 자식 컴포넌트로 분리하기 전 단계입니다.
+ */
 import { ref, computed, watch, watchEffect } from 'vue'
 
 // 1. [1일차 데이터] 가상의 백엔드 데이터 배열
@@ -45,7 +50,9 @@ const showDetail = (cityName, status) => {
 </script>
 
 <template>
+  <!-- 검색 입력 → computed 필터링 → 카드 목록 렌더링의 흐름을 한 화면에 보여줍니다. -->
   <div class="dashboard-wrapper">
+    <!-- 검색어를 ref와 직접 연결하는 검색 영역 -->
     <section class="search-box">
       <h3>🔍 도시 검색</h3>
       <input type="text" :value="searchQuery" @input="(e) => (searchQuery = e.target.value)" placeholder="검색할 도시 이름 입력" />
@@ -54,6 +61,7 @@ const showDetail = (cityName, status) => {
       </p>
     </section>
 
+    <!-- filteredWeatherList의 현재 값만 반복 출력하는 결과 영역 -->
     <section class="list-box">
       <h3>🏙️ 지역별 날씨 현황</h3>
 
@@ -70,6 +78,7 @@ const showDetail = (cityName, status) => {
       <p v-if="filteredWeatherList.length === 0" style="text-align: center; color: #e74c3c; padding: 10px 0">😭 검색 결과와 일치하는 도시가 없습니다.</p>
     </section>
 
+    <!-- 마지막으로 선택된 도시를 사용자에게 피드백하는 상태 영역 -->
     <div class="status-bar">
       {{ selectedCityInfo }}
     </div>

@@ -1,4 +1,9 @@
 <script setup>
+/**
+ * 선택한 좌표, 역지오코딩 장소, OpenWeatherMap 날씨를 읽기 쉬운 정보 카드로 표현합니다.
+ * 이 컴포넌트는 API를 직접 호출하지 않는 순수 표시 계층이며, props 조합을 computed로 정규화해
+ * 초기·로딩·부분 성공·전체 실패 상태를 한 패널 안에서 안정적으로 전환합니다.
+ */
 import { computed } from 'vue'
 
 const props = defineProps({
@@ -28,6 +33,7 @@ const props = defineProps({
   },
 })
 
+// 장소 API가 제공하는 여러 행정구역 필드 중 가장 구체적인 이름을 우선 선택합니다.
 const address = computed(() => props.place?.address ?? {})
 const locationName = computed(
   () =>
@@ -42,10 +48,12 @@ const regionName = computed(() =>
   [address.value.state, address.value.country].filter(Boolean).join(', '),
 )
 const weatherDescription = computed(() => props.weather?.weather?.[0]?.description ?? '정보 없음')
+// OpenWeatherMap 아이콘 코드가 있을 때만 공식 아이콘 URL을 만듭니다.
 const weatherIconUrl = computed(() => {
   const icon = props.weather?.weather?.[0]?.icon
   return icon ? `https://openweathermap.org/img/wn/${icon}@2x.png` : ''
 })
+// API의 UTC 타임스탬프에 선택 지역의 timezone 초 오프셋을 더해 현지 시각을 표시합니다.
 const localTime = computed(() => {
   if (!props.weather?.dt) return '정보 없음'
 
@@ -60,10 +68,12 @@ const localTime = computed(() => {
   }).format(new Date(localTimestamp))
 })
 
+// 좌표 자릿수를 통일하고 유효하지 않은 값은 안전한 대체 문자로 표시합니다.
 const formatCoordinate = (value) => (Number.isFinite(value) ? value.toFixed(5) : '—')
 </script>
 
 <template>
+  <!-- aria-live로 비동기 조회 결과 변경을 보조 기술 사용자에게 전달합니다. -->
   <aside class="info-panel" aria-live="polite">
     <header class="panel-header">
       <p class="eyebrow">SELECTED LOCATION</p>
@@ -71,6 +81,7 @@ const formatCoordinate = (value) => (Number.isFinite(value) ? value.toFixed(5) :
       <p>위치와 현재 날씨를 한눈에 확인하세요.</p>
     </header>
 
+    <!-- 아직 지구본을 클릭하지 않은 최초 진입 상태 -->
     <div v-if="!coordinates" class="empty-state">
       <div class="empty-state__icon">◎</div>
       <strong>아직 선택한 위치가 없습니다</strong>
@@ -78,6 +89,7 @@ const formatCoordinate = (value) => (Number.isFinite(value) ? value.toFixed(5) :
     </div>
 
     <template v-else>
+      <!-- API 성공 여부와 무관하게 사용자가 실제 클릭한 좌표는 즉시 유지합니다. -->
       <section class="coordinate-card">
         <p>클릭 좌표</p>
         <div class="coordinate-grid">
@@ -92,6 +104,7 @@ const formatCoordinate = (value) => (Number.isFinite(value) ? value.toFixed(5) :
         </div>
       </section>
 
+      <!-- 고정 높이 패널 내부에서 조회 상태만 교체되어 지구본 크기가 흔들리지 않습니다. -->
       <div v-if="isLoading" class="loading-state">
         <span class="spinner"></span>
         위치 정보를 불러오는 중입니다
@@ -99,6 +112,7 @@ const formatCoordinate = (value) => (Number.isFinite(value) ? value.toFixed(5) :
 
       <p v-if="errorMessage" class="message message--error">{{ errorMessage }}</p>
 
+      <!-- 장소 또는 날씨 중 하나만 성공해도 확보된 정보는 부분 렌더링합니다. -->
       <template v-if="!isLoading && (place || weather)">
         <section class="place-summary">
           <div>
@@ -144,6 +158,7 @@ const formatCoordinate = (value) => (Number.isFinite(value) ? value.toFixed(5) :
         </dl>
       </template>
 
+      <!-- 부분 실패는 전체 오류와 구분해 경고 목록으로 안내합니다. -->
       <ul v-if="warningMessages.length && !isLoading" class="warning-list">
         <li v-for="message in warningMessages" :key="message">{{ message }}</li>
       </ul>
@@ -154,6 +169,7 @@ const formatCoordinate = (value) => (Number.isFinite(value) ? value.toFixed(5) :
 </template>
 
 <style scoped>
+/* 지구본과 같은 높이를 유지하고 내용이 길면 패널 내부만 스크롤합니다. */
 .info-panel {
   box-sizing: border-box;
   height: 610px;
@@ -199,6 +215,7 @@ const formatCoordinate = (value) => (Number.isFinite(value) ? value.toFixed(5) :
   font-size: 13px;
 }
 
+/* 선택 전 상태를 패널 중앙에서 명확하게 안내하는 빈 화면 */
 .empty-state {
   display: grid;
   min-height: 400px;
@@ -247,6 +264,7 @@ const formatCoordinate = (value) => (Number.isFinite(value) ? value.toFixed(5) :
   font-weight: 700;
 }
 
+/* 좌표와 핵심 날씨 수치를 비교하기 쉬운 카드형 그리드 */
 .coordinate-grid,
 .weather-grid {
   display: grid;

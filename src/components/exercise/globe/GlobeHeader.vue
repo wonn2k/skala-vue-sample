@@ -1,4 +1,10 @@
+<!--
+  지구본 서비스 전용 전역 헤더입니다.
+  브랜드 링크와 주요 라우트 두 개를 RouterLink로 연결하며, 현재 경로는 Vue Router가 제공하는
+  router-link-exact-active 클래스로 강조합니다. 별도 script 상태 없이 라우터 상태만으로 동작합니다.
+-->
 <template>
+  <!-- 브랜드를 클릭하면 언제든 지구본 메인(/)으로 돌아갑니다. -->
   <header class="globe-header">
     <RouterLink to="/" class="globe-brand" aria-label="지구본 날씨 홈">
       <span class="globe-brand__icon" aria-hidden="true"></span>
@@ -8,6 +14,7 @@
       </span>
     </RouterLink>
 
+    <!-- 지구본과 과제 모음 사이를 SPA 방식으로 이동하는 주 내비게이션 -->
     <nav class="globe-header__nav" aria-label="주요 페이지">
       <RouterLink to="/" class="globe-header__link">
         <span aria-hidden="true">01</span> 지구본 날씨
@@ -20,6 +27,7 @@
 </template>
 
 <style scoped>
+/* 밝은 본문 위에서 서비스 정체성을 구분하는 어두운 반응형 헤더 */
 .globe-header {
   box-sizing: border-box;
   display: flex;
@@ -48,6 +56,7 @@
   background: transparent;
 }
 
+/* 별도 이미지 요청 없이 CSS 그라데이션으로 만든 지구본 브랜드 아이콘 */
 .globe-brand__icon {
   position: relative;
   width: 39px;
@@ -88,6 +97,7 @@
   letter-spacing: 0.13em;
 }
 
+/* 현재 링크 강조 배경을 포함하는 캡슐형 내비게이션 컨테이너 */
 .globe-header__nav {
   display: flex;
   align-items: center;
@@ -119,6 +129,7 @@
   color: #0c2942;
 }
 
+/* 모바일에서는 브랜드와 메뉴를 두 줄로 배치하고 링크 폭을 균등 분배합니다. */
 @media (max-width: 620px) {
   .globe-header {
     align-items: flex-start;

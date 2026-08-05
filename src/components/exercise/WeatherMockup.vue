@@ -1,4 +1,9 @@
 <script setup>
+/**
+ * Vue 렌더링 최적화 기능을 실험하기 위한 단일 파일 날씨 목업입니다.
+ * lazy/trim 수식어로 입력 반영 시점을 제어하고, v-memo로 목록 갱신 조건을 제한하며,
+ * watch와 renderCount를 통해 검색 상태가 실제로 몇 번 변경됐는지 콘솔과 화면에서 확인합니다.
+ */
 import { computed, ref, watch } from 'vue'
 
 const weatherList = ref([
@@ -11,6 +16,7 @@ const searchQuery = ref('')
 const selectedCityInfo = ref('카드를 클릭하거나 검색해주세요')
 const renderCount = ref(0)
 
+// 원본 배열을 변경하지 않고 검색어에 맞는 표시 목록을 계산합니다.
 const filteredWeatherList = computed(() => {
   const query = searchQuery.value.trim()
   if (!query) return weatherList.value
@@ -42,6 +48,7 @@ const showDetail = (cityName, status) => {
 </script>
 
 <template>
+  <!-- 검색 최적화 동작과 결과 카드 목록을 함께 관찰하는 실습 화면 -->
   <div class="dashboard-wrapper">
     <section class="search-box">
       <h3>🔍 도시 검색</h3>
@@ -58,6 +65,7 @@ const showDetail = (cityName, status) => {
       </p>
     </section>
 
+    <!-- searchQuery가 같다면 이 하위 트리의 가상 DOM 갱신을 건너뜁니다. -->
     <section class="list-box" v-memo="[searchQuery]">
       <h3>🏙️ 지역별 날씨 현황</h3>
       <!-- 추가 : v-memo를 활용하여 searchQuery가 변경될 때만 리렌더링, 결과를 출력 -->

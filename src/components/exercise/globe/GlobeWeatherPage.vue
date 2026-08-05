@@ -1,10 +1,16 @@
 <script setup>
+/**
+ * 지구본 날씨 기능의 페이지 조합(root) 컴포넌트입니다.
+ * useGlobeLocation이 좌표·날씨·장소 조회를, useTravelRecommendations가 Gemini 추천을 담당하고,
+ * 이 컴포넌트는 두 composable의 상태를 지도·정보 패널·추천 UI에 연결하는 오케스트레이션 역할을 합니다.
+ */
 import GlobeMap from './GlobeMap.vue'
 import LocationInfoPanel from './LocationInfoPanel.vue'
 import TravelRecommendations from './TravelRecommendations.vue'
 import { useGlobeLocation } from './useGlobeLocation.js'
 import { useTravelRecommendations } from './useTravelRecommendations.js'
 
+// 지구본 선택에서 시작되는 위치/날씨 조회 상태와 액션입니다.
 const {
   selectedCoordinates,
   weather,
@@ -15,6 +21,7 @@ const {
   selectLocation,
 } = useGlobeLocation()
 
+// 위치 조회 결과를 입력으로 사용하는 AI 여행 추천 상태와 액션입니다.
 const {
   recommendation,
   isLoading: isRecommendationLoading,
@@ -33,7 +40,9 @@ const {
 </script>
 
 <template>
+  <!-- 소개 히어로 → 지도/정보 2열 → AI 추천 순서로 사용자 여정을 구성합니다. -->
   <main class="globe-page">
+    <!-- 서비스 목적과 지구본 조작 방법을 처음 방문한 사용자에게 안내합니다. -->
     <header class="weather-hero">
       <div class="weather-hero__copy">
         <p><span></span> WEATHER AROUND THE WORLD</p>
@@ -57,6 +66,7 @@ const {
       </div>
     </header>
 
+    <!-- 지도 이벤트는 페이지에서 받고, 조회 결과는 우측 패널 props로 전달합니다. -->
     <div class="globe-layout">
       <GlobeMap @select-location="selectLocation" />
       <LocationInfoPanel
@@ -69,6 +79,7 @@ const {
       />
     </div>
 
+    <!-- 날씨 조회가 완료된 뒤 활성화되는 별도의 Gemini 추천 단계 -->
     <TravelRecommendations
       :recommendation="recommendation"
       :location-label="locationLabel"
@@ -84,6 +95,7 @@ const {
 </template>
 
 <style scoped>
+/* 페이지 최대 폭, 기본 글꼴, 상하 여백을 정의하는 최상위 레이아웃 */
 .globe-page {
   width: min(1180px, calc(100vw - 40px));
   margin: 0 auto;
@@ -96,6 +108,7 @@ const {
     sans-serif;
 }
 
+/* 서비스 소개와 조작 가이드를 양쪽에 배치한 히어로 카드 */
 .weather-hero {
   position: relative;
   display: flex;
@@ -236,6 +249,7 @@ const {
   line-height: 1.5;
 }
 
+/* 지구본과 정보 패널의 핵심 2열 작업 공간 */
 .globe-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.45fr) minmax(330px, 0.75fr);

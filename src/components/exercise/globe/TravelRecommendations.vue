@@ -1,4 +1,9 @@
 <script setup>
+/**
+ * Gemini가 생성한 관광지와 복장 추천을 표시하고 추천 요청 이벤트를 발생시키는 UI 컴포넌트입니다.
+ * API 호출은 부모/composable에 위임하며, 이곳에서는 props에 따라 최초 안내·로딩·성공·오류·
+ * 서비스 과부하 카운트다운 상태를 구분해 사용자가 다음 행동을 알 수 있도록 표현합니다.
+ */
 import { computed } from 'vue'
 
 const props = defineProps({
@@ -14,10 +19,12 @@ const props = defineProps({
 
 defineEmits(['request'])
 
+// 과부하/할당량/앱 제한은 기다린 뒤 다시 시도할 수 있으므로 일반 오류와 다른 경고 UI를 사용합니다.
 const isRetryableError = computed(() =>
   ['GEMINI_OVERLOADED', 'GEMINI_QUOTA_EXCEEDED', 'REQUEST_LIMITED'].includes(props.errorCode),
 )
 
+// 버튼 문구 자체에 현재 처리 상태와 남은 대기 시간을 반영합니다.
 const requestButtonLabel = computed(() => {
   if (props.isLoading) return '추천을 준비하는 중...'
   if (props.cooldownSeconds > 0) return `${props.cooldownSeconds}초 후 다시 시도`
@@ -26,6 +33,7 @@ const requestButtonLabel = computed(() => {
 </script>
 
 <template>
+  <!-- 헤더의 요청 버튼과 본문의 상태/결과 영역으로 구성합니다. -->
   <section class="recommendation-section" aria-labelledby="recommendation-title">
     <header class="recommendation-header">
       <div>
@@ -48,6 +56,7 @@ const requestButtonLabel = computed(() => {
     <p v-if="!locationLabel" class="helper-message">
       지구본에서 위치를 선택하고 날씨 조회가 끝나면 추천받을 수 있습니다.
     </p>
+    <!-- 오류 코드에 따라 재시도 가능한 경고와 즉시 해결이 필요한 오류를 시각적으로 구분합니다. -->
     <div
       v-if="errorMessage"
       class="status-message"
@@ -67,12 +76,14 @@ const requestButtonLabel = computed(() => {
       </div>
     </div>
 
+    <!-- 기존 결과가 없을 때만 전체 로딩 화면을 보여 기존 추천이 깜박이며 사라지는 것을 막습니다. -->
     <div v-if="isLoading && !recommendation" class="loading-state">
       <span class="large-spinner" aria-hidden="true"></span>
       <strong>날씨와 여행지를 함께 살펴보고 있습니다</strong>
       <p>잠시만 기다려 주세요.</p>
     </div>
 
+    <!-- 구조화된 Gemini 결과를 관광지 목록과 복장 카드의 2열 레이아웃으로 변환합니다. -->
     <template v-else-if="recommendation">
       <p class="recommendation-summary">{{ recommendation.summary }}</p>
 
@@ -113,6 +124,7 @@ const requestButtonLabel = computed(() => {
       </div>
     </template>
 
+    <!-- 위치는 선택했지만 아직 추천을 요청하지 않은 상태 -->
     <div v-else class="empty-recommendation">
       <span>✦</span>
       <strong>Gemini 여행 가이드</strong>
@@ -122,6 +134,7 @@ const requestButtonLabel = computed(() => {
 </template>
 
 <style scoped>
+/* 날씨 조회 영역과 구분되면서 같은 디자인 언어를 유지하는 추천 섹션 */
 .recommendation-section {
   margin-top: 24px;
   padding: 34px;
@@ -212,6 +225,7 @@ const requestButtonLabel = computed(() => {
   font-size: 12px;
 }
 
+/* 오류/재시도 정보를 아이콘과 텍스트로 묶는 상태 배너 */
 .status-message {
   display: flex;
   align-items: flex-start;
@@ -310,6 +324,7 @@ const requestButtonLabel = computed(() => {
   line-height: 1.75;
 }
 
+/* 관광지 목록을 넓게, 복장 카드를 보조 열로 배치하는 결과 그리드 */
 .recommendation-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
@@ -500,6 +515,7 @@ const requestButtonLabel = computed(() => {
   }
 }
 
+/* 좁은 화면에서는 결과와 헤더를 세로 흐름으로 전환합니다. */
 @media (max-width: 800px) {
   .recommendation-section {
     padding: 24px;
