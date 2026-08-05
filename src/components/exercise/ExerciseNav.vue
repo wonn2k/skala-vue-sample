@@ -22,12 +22,8 @@ defineProps({
     :aria-label="`과제 ${assignment} 날씨 서비스 메뉴`"
   >
     <div class="navigation-links">
-      <template v-if="assignment >= 7">
-        <RouterLink to="/" class="nav-item">🌍 지구본에서 찾기</RouterLink>
-        <span class="divider">|</span>
-      </template>
       <RouterLink to="/assignments" class="nav-item" :class="dashboardLinkClass">
-        🧪 실습 과제 &amp; 튜닝
+        🌦️ 날씨 대시보드
       </RouterLink>
       <span class="divider">|</span>
       <RouterLink to="/about" class="nav-item">ℹ️ 서비스 소개</RouterLink>

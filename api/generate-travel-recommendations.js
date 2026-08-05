@@ -90,6 +90,7 @@ const buildPrompt = ({ country, location, weather, temperature, feelsLike, humid
     '선택 지역 또는 접근 가능한 인근 지역에 실제로 존재하는 대표 관광지 3곳을 추천하세요.',
     '현재 날씨에 적합한 관광지를 우선하고 실내외 여부와 방문 시 날씨 팁을 포함하세요.',
     '관광객이 지금 입기 좋은 구체적인 복장과 준비물을 추천하세요.',
+    '요약과 추천 이유는 각각 두 문장 이내, 날씨 팁과 복장 항목은 간결한 한 문장으로 작성하세요.',
     '확인할 수 없는 운영시간, 가격, 행사 일정은 만들어내지 마세요.',
     '모든 답변은 자연스러운 한국어로 작성하세요.',
   ].join(' ')
@@ -152,7 +153,10 @@ export default async function handler(request, response) {
         generationConfig: {
           responseMimeType: 'application/json',
           responseJsonSchema: recommendationSchema,
-          maxOutputTokens: 1800,
+          maxOutputTokens: 4096,
+          thinkingConfig: {
+            thinkingLevel: 'minimal',
+          },
         },
       }),
     })
@@ -166,13 +170,40 @@ export default async function handler(request, response) {
       })
     }
 
-    const responseText = result.candidates?.[0]?.content?.parts
+    const candidate = result.candidates?.[0]
+    const responseText = candidate?.content?.parts
       ?.map((part) => part.text ?? '')
       .join('')
 
+    if (candidate?.finishReason !== 'STOP') {
+      console.error('Gemini 추천 응답 중단:', {
+        finishReason: candidate?.finishReason,
+        finishMessage: candidate?.finishMessage,
+        usageMetadata: result.usageMetadata,
+      })
+      return response.status(502).json({
+        message: 'AI 추천 응답이 완성되지 않았습니다. 다시 시도해 주세요.',
+      })
+    }
+
     if (!responseText) throw new Error('Gemini 응답에 추천 결과가 없습니다.')
 
-    return response.status(200).json({ recommendation: JSON.parse(responseText) })
+    let recommendation
+
+    try {
+      recommendation = JSON.parse(responseText.trim().replace(/^```json\s*|\s*```$/g, ''))
+    } catch (error) {
+      console.error('Gemini 추천 JSON 파싱 실패:', {
+        message: error.message,
+        finishReason: candidate.finishReason,
+        responseLength: responseText.length,
+      })
+      return response.status(502).json({
+        message: 'AI 추천 형식을 처리하지 못했습니다. 다시 시도해 주세요.',
+      })
+    }
+
+    return response.status(200).json({ recommendation })
   } catch (error) {
     console.error('AI 여행 추천 처리 실패:', error)
     return response.status(500).json({

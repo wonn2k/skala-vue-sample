@@ -8,14 +8,16 @@ import AxiosWeather from './components/practices/library/AxiosWeather.vue'
 import AxiosJson from './components/practices/library/AxiosJson.vue'
 import TuningPoints from './components/exercise/TuningPoints.vue'
 import ExerciseNav from './components/exercise/ExerciseNav.vue'
+import GlobeHeader from './components/exercise/globe/GlobeHeader.vue'
 </script>
 
 <template>
   <div v-if="$route.name === 'GlobeWeather'" class="globe-route-shell">
-    <ExerciseNav :assignment="8" class="globe-navigation" />
+    <GlobeHeader />
     <RouterView />
   </div>
   <div v-else class="assignment-list">
+    <GlobeHeader class="assignment-header" />
     <div class="app-container">
       <h1>⛅ 과제 1: 날씨 (Mockup)</h1>
       <hr />
@@ -92,6 +94,26 @@ import ExerciseNav from './components/exercise/ExerciseNav.vue'
 /* ⚠️ 외부 스타일 파일(예: 버튼 디자인 뭉치)을 이 방 안으로 쏙 가리켜 가져옵니다 */
 @import '@/assets/exercise.css';
 
+#app {
+  display: block;
+  max-width: 1720px;
+}
+
+.assignment-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px 24px;
+  padding: 24px 0 40px;
+}
+
+.assignment-list .app-container {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  margin: 0;
+}
+
 .globe-route-shell {
   box-sizing: border-box;
   min-height: 100vh;
@@ -99,13 +121,26 @@ import ExerciseNav from './components/exercise/ExerciseNav.vue'
   background: #f4f8fb;
 }
 
-.globe-navigation {
-  width: min(100% - 20px, 1140px);
-  margin: 0 auto;
+.assignment-header {
+  grid-column: 1 / -1;
+  width: min(100%, 1140px);
+  margin: 0;
+  justify-self: center;
 }
 
 .assignment-8-dashboard-link {
   font-size: 15px;
+}
+
+@media (max-width: 1399px) {
+  .assignment-list {
+    grid-template-columns: minmax(0, 900px);
+    justify-content: center;
+  }
+
+  .assignment-header {
+    grid-column: auto;
+  }
 }
 
 </style>
