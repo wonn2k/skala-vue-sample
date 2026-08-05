@@ -2,6 +2,7 @@
 import WeatherMockup from './components/exercise/WeatherMockup.vue'
 import WeatherComposition from './components/exercise/WeatherComposition.vue'
 import WeatherParent from './components/exercise/WeatherParent.vue'
+import WeatherParentElemplus from './components/exercise/WeatherParent_elemplus.vue'
 import UnitToggler from './components/exercise/UnitToggler.vue'
 import AxiosWeather from './components/practices/library/AxiosWeather.vue'
 import AxiosJson from './components/practices/library/AxiosJson.vue'
@@ -69,6 +70,12 @@ import TuningPoints from './components/exercise/TuningPoints.vue'
     <AxiosWeather />
     <AxiosJson />
     <TuningPoints :assignment="6" />
+  </div>
+  <div class="app-container">
+    <h1>⛅ 과제 7: 과제 3에 Element Plus 적용</h1>
+    <hr />
+    <WeatherParentElemplus />
+    <TuningPoints :assignment="7" />
   </div>
 </template>
 
