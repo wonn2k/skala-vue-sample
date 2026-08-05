@@ -156,7 +156,9 @@ const formatCoordinate = (value) => (Number.isFinite(value) ? value.toFixed(5) :
 <style scoped>
 .info-panel {
   box-sizing: border-box;
+  height: 610px;
   min-height: 610px;
+  overflow-y: auto;
   padding: 30px;
   border: 1px solid #e2e8f0;
   border-radius: 24px;
@@ -392,6 +394,7 @@ const formatCoordinate = (value) => (Number.isFinite(value) ? value.toFixed(5) :
 
 @media (max-width: 900px) {
   .info-panel {
+    height: 480px;
     min-height: 480px;
   }
 }
